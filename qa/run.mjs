@@ -526,6 +526,8 @@ try {
 { const q = await newPage(); await closeHow(q);
   await q.evaluate(() => { localStorage.setItem("tpy-v1", JSON.stringify({ v: 1, tut: true, days: {}, hdays: {}, adays: {}, dex: { constructor: 1, toString: 2, w45g: 1 }, runs: {}, kofi: {}, ach: {}, ebest: 0 })); }); await q.reload(); await q.waitForTimeout(150);
   check("記録に constructor などの鍵が入っても、まなび帳と実績の種類に数えない（CodeRabbit funka-level#1）", (await q.textContent("#go-dex")).includes("1/30") && await q.evaluate(() => __nm.tally(__nm.load()).kinds) === 1, await q.textContent("#go-dex"));
+  await q.evaluate(() => { localStorage.setItem("tpy-v1", JSON.stringify({ v: 1, tut: true, days: {}, hdays: {}, adays: {}, dex: {}, runs: {}, kofi: {}, ach: {}, ebest: { toString: null } })); }); await q.reload(); await q.waitForTimeout(150);
+  check("記録の数の所に数でも文字でもない物（{toString:null}）が入っても、ホームが出る（toppu-yomi #1 の CodeRabbit）", await q.locator("#go-dex").count() === 1);
   await q.close(); }
 { const bad = G.KINDS.filter((k) => { for (let i = 0; i < 200; i++) { const P = G.make(`${k.id}|g${i}`); if (/^w\d+[tdg]$/.test(k.id) ? !G.GROUPS[P.grp] : P.grp) return true; } return false; }).map((k) => k.id), used = new Set(G.KINDS.map((k) => k.grp).filter(Boolean));
   check("2段目「どの突風？」：階級の問題はどれも3つ（竜巻・ダウンバースト・ガストフロント）のどれかで、3つとも使う。しくみの問題には2段目が無い", bad.length === 0 && Object.keys(G.GROUPS).join() === "tatsumaki,down,gust" && used.size === 3, bad.join(",")); }
